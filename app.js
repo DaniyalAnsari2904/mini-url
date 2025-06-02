@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import userRoute from './route/user_route.js';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
-import { sql, pool, connectDB } from './config/db.js';
+import pool from './config/pg_db.js';
 
 dotenv.config();
 
@@ -24,10 +24,12 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 app.use('/', userRoute);
 
-connectDB().then(() => {
-    console.log('Database connected successfully');
-}).catch((error) => {
-    console.error('Database connection failed:', error);
+pool.query('SELECT NOW()', (err, result) => {
+  if (err) {
+    console.error('❌ DB query error:', err);
+  } else {
+    console.log('✅ DB time check:', result.rows[0]);
+  }
 });
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

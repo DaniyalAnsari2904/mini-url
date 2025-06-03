@@ -1,23 +1,24 @@
-import { sql, pool } from "../config/pg_db.js";
+import pool from "../config/pg_db.js";
 
 export const insertUrl = async (long_url, short_code) => {
-    const result = await pool.request()
-        .input('long_url', sql.VarChar, long_url)
-        .input('short_code', sql.VarChar, short_code)
-        .query('insert into urls (long_url, short_code) values(@long_url, @short_code)');
+    const query = 'INSERT INTO urls (long_url, short_code) VALUES ($1, $2)';
+    const values = [long_url, short_code];
+    const result = await pool.query(query, values);
     return result;
 }
 
+// Get original URL by short code
 export const getUrlByCode = async (short_code) => {
-    const result = await pool.request()
-        .input('short_code', sql.VarChar, short_code)
-        .query('select long_url from urls where short_code = @short_code');
-    return result.recordset[0];
+    const query = 'SELECT long_url FROM urls WHERE short_code = $1';
+    const values = [short_code];
+    const result = await pool.query(query, values);
+    return result.rows[0]; // PostgreSQL returns rows instead of recordset
 }
 
+// Increment click count
 export const incrementClickCount = async (short_code) => {
-    const result = await pool.request()
-        .input('short_code', sql.VarChar, short_code)
-        .query('update urls set click_count = click_count + 1 where short_code = @short_code');
+    const query = 'UPDATE urls SET click_count = click_count + 1 WHERE short_code = $1';
+    const values = [short_code];
+    const result = await pool.query(query, values);
     return result;
 }

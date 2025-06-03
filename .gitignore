@@ -1,3 +1,6 @@
 node_modules/
 .env
+<<<<<<< HEAD
 config/db.js
+=======
+>>>>>>> 731bc2e954e41178be6ff77399d6c293a9c53e87

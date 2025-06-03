@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import userRoute from './route/user_route.js';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
-import { sql, pool, connectDB } from './config/pg_db.js';
+import pool from './config/pg_db.js';
 
 dotenv.config();
 
